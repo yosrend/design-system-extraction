@@ -1,11 +1,53 @@
 ---
 name: "design-system-extraction"
-description: "Extract a reusable, traceable design system from a permitted website, app, screenshot, design file, or codebase; document tokens, components, patterns, accessibility, and responsive behavior; then build new pages from that system."
+description: "Extract a complete, reusable design system when users ask to audit a website or app, reverse-engineer UI from a URL or screenshot, turn code or a design file into tokens and components, document responsive and accessibility rules, or build new pages that stay faithful to an existing visual language."
 ---
 
-# Design-System Extraction and Build Loop
+# Design System Extraction
 
-Use this skill when the user wants to turn a source website, app, screenshot, HTML import, or codebase into a complete, reusable design system, and then build new pages from it.
+Turn a reference into a system—not a pile of disconnected colors and screenshots.
+
+This skill produces an editable source capture, production-density design-system boards, traceable tokens and components, responsive and accessibility rules, and a repeatable build loop for new pages. Every documented decision stays visibly comparable to its source.
+
+## When to use this skill
+
+Use it when the user wants to:
+
+- Extract or reverse-engineer a design system from a live website or application.
+- Convert a screenshot, HTML import, design file, or frontend codebase into reusable foundations and components.
+- Audit an existing interface before redesigning or extending it.
+- Document tokens, interaction states, patterns, graphics, responsive behavior, motion, or accessibility.
+- Build a landing page or product surface using an extracted visual language.
+- Compare a source against a reusable design-system handoff.
+
+Typical phrases include “extract this design system,” “analyze this UI,” “turn this site into components,” “recreate this style,” “make a design-system board,” and “build another page using this design.”
+
+## When not to use it
+
+- The user only needs a quick visual critique with no reusable system.
+- The request is only for a moodboard, brand strategy, logo, or illustration.
+- The source is private, restricted, or licensed and the user cannot confirm permission.
+- The user wants an exact clone that would reuse protected brand assets or impersonate the source.
+
+## What this skill delivers
+
+| Deliverable | Contents |
+| --- | --- |
+| Source capture | Editable render, viewport, provenance, and limitations |
+| 01 Foundations | Color, typography, spacing, grid, radius, borders, effects, and icons |
+| 02 Controls and components | Variants, sizes, states, inverse treatments, forms, navigation, and feedback |
+| 03 Patterns, graphics, and rules | Section patterns, real reusable graphics, responsive behavior, motion, coverage, and usage rules |
+| Validation | Origin labels, accessibility findings, coverage matrix, brand boundaries, and unresolved gaps |
+| Optional build | New desktop page, variations, mobile adaptation, and synchronized system updates |
+
+## Minimum input
+
+Ask only for what is missing:
+
+1. One authorized source: URL, screenshot, design file, HTML import, or codebase.
+2. Destination tool: Claude Design, Figma, Pencil, Paper, or another editable canvas.
+3. Target viewport when it differs from the 1440 × 900 desktop default.
+4. Whether to stop after the audit, complete the boards, or also build a new page.
 
 Role: act as a senior design-systems designer.
 
@@ -23,6 +65,16 @@ Never copy secrets, personal data, analytics identifiers, session tokens, privat
 
 Core idea: good AI design comes from a strong reference, a clear design system as the constraint, and repeated iteration on the real render. The design system is the source of truth for every page that follows.
 
+## Source decision table
+
+| Source | Expected fidelity | Required handling |
+| --- | --- | --- |
+| Live URL | Exact where inspectable | Capture editable DOM/CSS and real reusable assets |
+| Design file or HTML import | Exact | Read editable node properties and variables directly |
+| HTML, CSS, JSX, or Tailwind | Exact | Render the code into editable artboards before extraction |
+| Screenshot or image | Estimated | Rebuild by eye, preserve the reference, and label measurements Estimated |
+| Restricted or authenticated source | User-authorized only | Prefer a user-provided export; never bypass access controls |
+
 ## The loop at a glance
 1. Reference. Get a strong source (user link, screenshot, Mobbin, X, a product they like)
 2. Capture. Bring the source into the canvas as editable HTML with its real graphics
@@ -33,6 +85,15 @@ Core idea: good AI design comes from a strong reference, a clear design system a
 7. Sync. Update the design system with what the iterations decided
 8. Explore. 2 to 3 variations of color, type or layout before committing
 9. Expand. Mobile, dashboard, empty states and other pages from the same system, on request
+
+## Operating principles
+
+- **Capture before abstraction.** The visible source is the evidence for every token and component.
+- **Editable before decorative.** A flat screenshot may verify fidelity but never replaces the editable capture.
+- **Trace every decision.** Every value carries an origin label and every source item receives a coverage status.
+- **Show, do not merely describe.** Components, states, grids, patterns, and responsive behavior need rendered specimens.
+- **Separate structure from identity.** Reuse interface logic and compositional rules; isolate logos, photography, copy, and protected brand assets.
+- **Iterate on the render.** Feedback changes the real page first, then synchronizes back into the system.
 
 ## Output target
 Work in ONE Claude Design canvas (the Design artifact type) by default. Use Pencil, Figma, Paper or another tool only when the user names it.
@@ -192,3 +253,42 @@ Completion also requires:
 - The coverage matrix accounts for every inspected item without double counting.
 - Brand-specific and licensed assets are clearly separated from reusable structure.
 - Assumptions, substitutions, unresolved gaps, and source provenance are recorded.
+
+## Failure modes and recovery
+
+| Problem | Recovery |
+| --- | --- |
+| Source is blocked or authenticated | Ask for an authorized export or user-provided capture; do not bypass controls |
+| CSS or assets are cross-origin and unreadable | Record the limitation, use computed values where permitted, and label approximations |
+| JavaScript animation cannot be reproduced | Freeze a representative state and document the missing interaction |
+| Screenshot is the only source | Rebuild with editable primitives and label all visually measured values Estimated |
+| Licensed font is unavailable | Use the closest open substitute and record the substitution on board 01 |
+| Design tool lacks HTML import or variables | Use the closest editable primitives and document the tooling limitation |
+| Source contains inconsistent patterns | Preserve the evidence, identify the inconsistency, and propose a Generated normalization separately |
+
+## Final response contract
+
+Close the work with a compact handoff containing:
+
+1. Source and viewport used.
+2. Extracted foundations, components, section patterns, and graphic assets.
+3. Counts grouped by origin label.
+4. Generated additions and accessibility fixes.
+5. Source-specific items excluded from reuse.
+6. Remaining limitations and substitutions.
+7. Link or preview for the editable canvas.
+8. One clear next action: build a page, explore variations, sync feedback, or expand responsively.
+
+## Example requests
+
+### Live website to system
+
+> Extract a reusable design system from this authorized URL in Figma. Capture it at 1440 × 900, preserve the editable source beside the boards, use its real reusable graphics, and label every value by origin. Stop after the audit for confirmation.
+
+### Screenshot-only reconstruction
+
+> Rebuild this screenshot as editable HTML, then extract foundations, controls, components, and section patterns. Mark visual measurements Estimated and list everything that cannot be inferred reliably.
+
+### Build from the extracted system
+
+> Use only the completed design system to create a desktop landing page for this product. Keep the source's visual character without copying its layout or brand assets, write real copy, and fix the documented contrast failures.
