@@ -2,7 +2,7 @@
 
 Turn an authorized website, app, screenshot, design file, or codebase into a reusable, traceable design system—then build new pages from it.
 
-[![skills.sh](https://skills.sh/b/yosrend/design-system-extraction)](https://skills.sh/yosrend/design-system-extraction)
+[![Install with skills.sh](https://img.shields.io/badge/Install%20with-skills.sh-111111?style=flat-square)](https://skills.sh/yosrend/design-system-extraction)
 
 ## Why this skill
 
@@ -19,9 +19,69 @@ Most extraction workflows stop at a token list. This skill requires a visible, e
 
 ## Install
 
+### Automatic agent detection
+
+Run this from your project root. The CLI detects supported agents already configured in the project:
+
 ```bash
 npx skills add yosrend/design-system-extraction
 ```
+
+### Codex
+
+```bash
+npx skills add yosrend/design-system-extraction \
+  --skill design-system-extraction \
+  --agent codex \
+  -y
+```
+
+### Claude Code
+
+```bash
+npx skills add yosrend/design-system-extraction \
+  --skill design-system-extraction \
+  --agent claude-code \
+  -y
+```
+
+### Cursor
+
+```bash
+npx skills add yosrend/design-system-extraction \
+  --skill design-system-extraction \
+  --agent cursor \
+  -y
+```
+
+### Windsurf
+
+```bash
+npx skills add yosrend/design-system-extraction \
+  --skill design-system-extraction \
+  --agent windsurf \
+  -y
+```
+
+### GitHub Copilot
+
+```bash
+npx skills add yosrend/design-system-extraction \
+  --skill design-system-extraction \
+  --agent github-copilot \
+  -y
+```
+
+### Every detected agent
+
+```bash
+npx skills add yosrend/design-system-extraction \
+  --skill design-system-extraction \
+  --agent '*' \
+  -y
+```
+
+Add `--global` to any command to install at user level instead of inside the current project.
 
 List the skill without installing it:
 
