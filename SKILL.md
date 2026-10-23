@@ -72,12 +72,13 @@ Core idea: good AI design comes from a strong reference, a clear design system a
 | Live URL | Exact where inspectable | Capture editable DOM/CSS and real reusable assets |
 | Design file or HTML import | Exact | Read editable node properties and variables directly |
 | HTML, CSS, JSX, or Tailwind | Exact | Render the code into editable artboards before extraction |
-| Screenshot or image | Estimated | Rebuild by eye, preserve the reference, and label measurements Estimated |
+| Screenshot or image | Estimated | Segment into regions, decompose every component into parts, measure on zoomed crops (Step 2b), preserve the reference, and label measurements Estimated |
 | Restricted or authenticated source | User-authorized only | Prefer a user-provided export; never bypass access controls |
 
 ## The loop at a glance
 1. Reference. Get a strong source (user link, screenshot, Mobbin, X, a product they like)
 2. Capture. Bring the source into the canvas as editable HTML with its real graphics
+2b. Decompose. Break every captured component into measured parts (anatomy tables) and verify them against the capture
 3. Extract. Audit, then build the design system boards
 4. Ask. "Apakah kamu mau bikin website baru dengan design system ini?" plus 3 to 4 basic questions
 5. Build. Desktop landing page constrained by the design system
@@ -153,6 +154,52 @@ Deliver the capture first, then continue.
 
 The delivered capture must be visible on the design canvas as editable HTML. A browser screenshot may be kept beside it for verification, but a screenshot does not replace the HTML artboard.
 
+## Step 2b. Decompose components into parts
+
+Section-level extraction is not enough. A button, card, nav item or form field is a set of parts, and every part needs its own measured values. Run this step after the capture and before the audit. Do not start Step 3 while any inspected component still has unmeasured parts.
+
+### 1. Segment
+- Split the capture into numbered regions in reading order (R01 header, R02 hero, and so on). Record each region's bounding box in capture pixels.
+- Identify every repeated unit inside a region (cards, rows, chips, list items, form fields, icon buttons). One unit becomes one component entry. Repeats become instances of it.
+- For screenshot sources, crop each region and each unit at 2x to 3x with the original saved untouched. Work from the crops, never from the full-page view.
+
+### 2. Anatomy table per component
+For each component, record one row per part:
+
+| Field | What to record |
+| --- | --- |
+| Part ID | Component.part, for example card.media, card.title, card.meta, card.action |
+| Role | container, media, icon, label, helper, badge, divider, avatar, indicator |
+| Box | x, y, width, height relative to the parent component |
+| Spacing | padding of the container, gap to each neighbor part, alignment (start, center, baseline) |
+| Text | font family, size, weight, line height, letter spacing, case, color, max lines, truncation |
+| Surface | fill, gradient, border width and color, radius per corner, shadow, opacity |
+| Graphic | icon name or shape, size, stroke width, color, optical alignment inside its box |
+| Origin | Extracted, Estimated, Inferred or Generated, per value |
+
+Add a nesting tree for the component (container > parts > sub-parts) so overlap, layering and z-order are explicit. Mark parts that are conditional (badge only when new, helper only on error).
+
+### 3. Extraction path per source type
+- Live URL or HTML import: traverse the DOM down to leaf nodes. For every node read getBoundingClientRect, computed style and pseudo-elements (::before, ::after). Derive gaps from sibling rect differences, not from the CSS gap value alone. Values are Extracted.
+- Design file: read node properties, auto layout settings, constraints and variables directly. Values are Extracted.
+- Code: resolve utility classes and CSS variables to final computed values before recording them.
+- Screenshot or image: measure on the zoomed crops. If a shell is available, use Python (PIL or OpenCV) to find part edges, measure distances in pixels, and sample color from the median of a clean interior area, never from anti-aliased edges. Convert to capture scale, then snap to the 4px or 8px scale the source follows and state the snap. Values are Estimated. If no shell is available, measure against known references on the crop (cap height, icon box, 1px borders) and say so.
+
+### 4. Part-level states
+Record the states visible in the source per part (hover, focus, active, selected, disabled, loading, error). Anything not visible is Generated and derived from the same part's colors, radius and spacing. Note which part changes in each state, not only the component as a whole.
+
+### 5. Verify each component against the capture
+- Rebuild the component from its anatomy table as editable primitives.
+- Overlay it on the original crop at 50 percent opacity. Record the largest position or size offset and the largest color difference.
+- Target tolerance for Estimated values: 2px on position and size, and a color difference a person cannot see at 100 percent zoom. Fix the table and rebuild until it is met, or record the remaining gap on the board.
+- Keep the overlay evidence in the audit so the user can inspect it.
+
+### 6. Output of this step
+- One anatomy table and one nesting tree per component.
+- A part inventory with counts: regions, components, instances, parts, parts by role, parts by origin label.
+- An unreadable-parts list with reasons (low resolution, clipped, covered by overlay, compression artifacts, unknown font) and what would resolve each one (higher resolution crop, the live URL, the design file).
+- Ask the user for a better source only when an unreadable part blocks a token or component. Otherwise continue and carry the gap forward as a limitation.
+
 ## Step 3. Extract the design system
 
 ### Label every value by origin
@@ -164,7 +211,7 @@ The delivered capture must be visible on the design canvas as editable HTML. A b
 - Updated: changed later by an iteration (Step 7)
 
 ### Audit before building
-Work section by section. Inventory node types, text styles, colors and gradients, borders, radii, shadows, spacing, layout, icons and SVG compositions, images, decorative geometry, repeated and unique structures, interaction states, responsive variations. Read CSS custom properties, computed styles, :hover rules and media queries. Convert lab or oklab colors to hex through a 1px canvas. Counts come from real traversal. Report source type, global counts, a section table (position, height, contents), unreadable areas and the brand-boundary list. Wait for confirmation unless told to continue.
+Work section by section. Inventory node types, text styles, colors and gradients, borders, radii, shadows, spacing, layout, icons and SVG compositions, images, decorative geometry, repeated and unique structures, interaction states, responsive variations. Take every component and its parts from the Step 2b anatomy tables instead of re-measuring them here. Read CSS custom properties, computed styles, :hover rules and media queries. Convert lab or oklab colors to hex through a 1px canvas. Counts come from real traversal. Report source type, global counts, a section table (position, height, contents), unreadable areas and the brand-boundary list. Wait for confirmation unless told to continue.
 
 ### Visual format
 Three documentation boards, 1440 wide, white, 64px margins, editorial style:
@@ -183,6 +230,7 @@ Build the boards as detailed visual specimens comparable to a production design-
 - **02 Controls and components:** button variant × state × size matrices; inverse controls; navigation, tabs, chips, selects, list rows, icon buttons and form states; then every reusable component rendered with real content, variants, annotations and origin labels; include generated feedback states such as toast, alert, empty state and skeleton.
 - **03 Patterns, graphics and rules:** miniature section-pattern previews; actual reusable source graphics; asset-classification table; responsive breakpoint and motion tables; mobile reflow preview; coverage metrics and per-item matrix; usage rules with visual do/don't examples; final limitations and extraction totals.
 - Use visual previews wherever the source contains a visual pattern. Do not replace a component, section, graphic, grid, responsive behavior or state with only a written description.
+- **Anatomy specimens:** on board 02, show every component beside its exploded view. Label each part with its Part ID, size, padding and gap to neighbors, type spec, and origin. Draw spacing as measured bars between parts, not as prose. Show the nesting tree and the per-part state changes.
 - Every specimen includes its name, relevant value or token, and origin label. Keep annotations compact and secondary to the rendered example.
 - Use the source's real graphics for reusable graphic-language examples. Clearly mark brand-specific assets as reference-only.
 - Export or show each completed board at a scale where its overall structure and specimen density are visible, matching the detail level of the user's provided Gumloop reference boards.
@@ -200,7 +248,7 @@ Interaction states, form fields with helper and error text, feedback (alert, toa
 Logos, brand marks, mascots, customer logos, photography and copy are Source-specific. They appear as reference only. Reusable interface graphics and decorative patterns may be reused as structure in new work.
 
 ### Coverage matrix, usage rules, validation
-Every pattern gets one status: token, reusable component, section pattern, graphic asset, or source-specific. Totals for nodes, text styles, colors, icons, SVG, images, controls, cards, nav patterns, sections, components, items per origin label. Usage rules for grid and rhythm, buttons and cards, type pairing, color ratios, graphic composition, do and don't. Validate against the capture section by section and list the source's contrast failures so new work fixes them.
+Every pattern gets one status: token, reusable component, section pattern, graphic asset, or source-specific. Every part in the Step 2b inventory also gets a status, so no part is documented only inside its parent. Totals for nodes, text styles, colors, icons, SVG, images, controls, cards, nav patterns, sections, components, parts, items per origin label. Usage rules for grid and rhythm, buttons and cards, type pairing, color ratios, graphic composition, do and don't. Validate against the capture section by section and list the source's contrast failures so new work fixes them.
 
 ---
 
@@ -251,6 +299,7 @@ Completion also requires:
 - Tokens and component names are consistent and machine-readable.
 - Keyboard focus, contrast, reduced motion, touch targets, and responsive reflow have been checked.
 - The coverage matrix accounts for every inspected item without double counting.
+- Every component has an anatomy table, and its rebuild was checked against the capture overlay within the stated tolerance or the gap is recorded.
 - Brand-specific and licensed assets are clearly separated from reusable structure.
 - Assumptions, substitutions, unresolved gaps, and source provenance are recorded.
 
@@ -261,7 +310,10 @@ Completion also requires:
 | Source is blocked or authenticated | Ask for an authorized export or user-provided capture; do not bypass controls |
 | CSS or assets are cross-origin and unreadable | Record the limitation, use computed values where permitted, and label approximations |
 | JavaScript animation cannot be reproduced | Freeze a representative state and document the missing interaction |
-| Screenshot is the only source | Rebuild with editable primitives and label all visually measured values Estimated |
+| Screenshot is the only source | Rebuild with editable primitives, decompose into parts on zoomed crops (Step 2b), and label all visually measured values Estimated |
+| Parts are too small or blurry to measure | Request a higher resolution crop or the live source, record the part as unreadable with the reason, and do not invent values |
+| Rebuilt component does not match the overlay | Re-measure the part that drifts, correct its row in the anatomy table, rebuild, and repeat until within tolerance or record the gap |
+| Part is hidden by an overlay, clip or truncation | Record the visible portion, mark the rest Inferred or Generated, and note the dependency on content length |
 | Licensed font is unavailable | Use the closest open substitute and record the substitution on board 01 |
 | Design tool lacks HTML import or variables | Use the closest editable primitives and document the tooling limitation |
 | Source contains inconsistent patterns | Preserve the evidence, identify the inconsistency, and propose a Generated normalization separately |
@@ -271,7 +323,7 @@ Completion also requires:
 Close the work with a compact handoff containing:
 
 1. Source and viewport used.
-2. Extracted foundations, components, section patterns, and graphic assets.
+2. Extracted foundations, components, parts, section patterns, and graphic assets, plus the list of unreadable parts.
 3. Counts grouped by origin label.
 4. Generated additions and accessibility fixes.
 5. Source-specific items excluded from reuse.

@@ -4,6 +4,8 @@ All notable user-facing changes are documented here.
 
 ## Unreleased
 
+- Added Step 2b, part decomposition: region segmentation, per-component anatomy tables, nesting trees, extraction paths per source type, part-level states, and overlay verification against the capture.
+- Added anatomy specimens, part-level coverage, and new failure modes for unreadable or drifting parts.
 - Expanded the skill page with trigger guidance, exclusions, deliverables, minimum inputs, source decisions, operating principles, failure recovery, handoff requirements, and example requests.
 - Replaced the unavailable dynamic install-count badge with a reliable skills.sh install badge.
 - Added explicit installation commands for Codex, Claude Code, Cursor, Windsurf, GitHub Copilot, and all detected agents.
