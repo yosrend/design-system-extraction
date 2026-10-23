@@ -79,6 +79,7 @@ Core idea: good AI design comes from a strong reference, a clear design system a
 1. Reference. Get a strong source (user link, screenshot, Mobbin, X, a product they like)
 2. Capture. Bring the source into the canvas as editable HTML with its real graphics
 2b. Decompose. Break every captured component into measured parts (anatomy tables) and verify them against the capture
+2c. Media. Record how images, photos, video, thumbnails, avatars, illustrations and patterns are treated, as rules, not as source files
 3. Extract. Audit, then build the design system boards
 4. Ask. "Apakah kamu mau bikin website baru dengan design system ini?" plus 3 to 4 basic questions
 5. Build. Desktop landing page constrained by the design system
@@ -171,10 +172,13 @@ For each component, record one row per part:
 | Part ID | Component.part, for example card.media, card.title, card.meta, card.action |
 | Role | container, media, icon, label, helper, badge, divider, avatar, indicator |
 | Box | x, y, width, height relative to the parent component |
+| Layout | direction (row, column, grid), main and cross axis alignment, wrap, fixed or fill or hug sizing per axis, min and max size, behavior with long or short content |
 | Spacing | padding of the container, gap to each neighbor part, alignment (start, center, baseline) |
 | Text | font family, size, weight, line height, letter spacing, case, color, max lines, truncation |
 | Surface | fill, gradient, border width and color, radius per corner, shadow, opacity |
+| Effects | blur, backdrop blur, glass, noise or grain, texture, overlay gradient, blend mode, mask, clip |
 | Graphic | icon name or shape, size, stroke width, color, optical alignment inside its box |
+| Media | media type (image, photo, video, thumbnail, avatar, illustration, pattern) and the treatment row it follows in Step 2c |
 | Origin | Extracted, Estimated, Inferred or Generated, per value |
 
 Add a nesting tree for the component (container > parts > sub-parts) so overlap, layering and z-order are explicit. Mark parts that are conditional (badge only when new, helper only on error).
@@ -200,6 +204,52 @@ Record the states visible in the source per part (hover, focus, active, selected
 - An unreadable-parts list with reasons (low resolution, clipped, covered by overlay, compression artifacts, unknown font) and what would resolve each one (higher resolution crop, the live URL, the design file).
 - Ask the user for a better source only when an unreadable part blocks a token or component. Otherwise continue and carry the gap forward as a limitation.
 
+## Step 2c. Media and visual treatment
+
+Extract how media is treated, not the media itself. Source photos, videos, illustrations and logos stay Source-specific and appear as reference only. The reusable output is the treatment rules that make new media look native to the system.
+
+### 1. Media inventory
+List every media item in the capture with its region, component, part ID, type, and whether it is content (changes per page) or decoration (fixed). Types: image, photo, video, thumbnail, avatar, illustration, icon set, pattern, background texture, logo.
+
+### 2. Treatment table per media type
+Record one row per type and per context (hero, card, list row, grid, gallery, avatar stack, modal, background):
+
+| Field | What to record |
+| --- | --- |
+| Ratio and size | aspect ratio, width and height per context and per breakpoint, min and max |
+| Fit and crop | cover, contain or fill, focal point or alignment, safe area for faces and text |
+| Shape | radius per corner, mask shape (circle, squircle, blob), border and color, outline offset |
+| Overlay | gradient direction and stops, tint color and opacity, text legibility scrim, blend mode |
+| Filter | grayscale, duotone, saturation, contrast, blur, grain, applied by state or always |
+| Shadow and frame | shadow, inner border, device or browser frame, padding between media and its frame |
+| States | loading (skeleton or blur-up), error, empty placeholder, hover (zoom, lift, overlay), selected, disabled |
+| Motion | hover transform, entrance, parallax, autoplay, loop, duration, easing, reduced motion behavior |
+| Origin | Extracted, Estimated, Inferred or Generated, per value |
+
+### 3. Video and thumbnails
+- Video: poster frame treatment, ratio, play button (shape, size, position, color, hover), control bar parts (progress, time, volume, fullscreen), autoplay, loop and muted rules, caption style, behavior when playback fails.
+- Thumbnails: ratio and size per context, badge parts on top (duration, label, count) with position and offset, title and meta below or over the image, hover and selected states, loading and error placeholders, grid gap and column rules.
+- Record each as an anatomy table (Step 2b) so every part of the video player and thumbnail card is measured.
+
+### 4. Patterns and textures
+For each pattern or background texture record: construction (SVG, CSS gradient, raster tile, canvas), tile size, repeat and offset, rotation, stroke or dot size, spacing, colors as tokens, opacity, blend mode, where it appears (section, card, hero), what sits on top of it, and the minimum contrast of text over it. Mark whether it scales or tiles at larger sizes. Reusable patterns are rebuilt from these values, not redrawn by eye.
+
+### 5. Avatars, illustrations and icons
+- Avatars: size scale, shape, fallback (initials, glyph), border and status indicator, group stack overlap and overflow count.
+- Illustration and graphics: style rules (stroke weight, corner style, palette limits, shading, perspective), the grid or canvas they sit on, and placement rules. Campaign-specific artwork stays Source-specific.
+- Icons: grid size, stroke or fill, stroke width, corner and cap style, optical sizes, and color rules. Record the icon set as a family, not as unrelated shapes.
+
+### 6. Visual style summary
+After the tables, write the style as testable rules: depth model (flat, layered, elevated), edge model (sharp, soft, pill), color usage on media, density, contrast level, and motion character. Each rule cites the Part IDs and treatment rows it was drawn from and carries an origin label.
+
+### 7. Verify
+Rebuild one example per treatment row with placeholder media (neutral image blocks, not the source files). Overlay it on the source crop as in Step 2b. Record the offset and the difference in crop, overlay and radius. Mark anything that depends on the actual image content (focal point, text contrast over a photo) as Inferred.
+
+### 8. Output of this step
+- Media inventory, treatment tables, video and thumbnail anatomy tables, pattern specs, and the visual style summary.
+- Counts: media items by type, treatment rows, patterns, parts by origin label.
+- Unreadable or unverifiable items with reasons, for example a video control shown only on hover that the source never reveals.
+
 ## Step 3. Extract the design system
 
 ### Label every value by origin
@@ -211,7 +261,7 @@ Record the states visible in the source per part (hover, focus, active, selected
 - Updated: changed later by an iteration (Step 7)
 
 ### Audit before building
-Work section by section. Inventory node types, text styles, colors and gradients, borders, radii, shadows, spacing, layout, icons and SVG compositions, images, decorative geometry, repeated and unique structures, interaction states, responsive variations. Take every component and its parts from the Step 2b anatomy tables instead of re-measuring them here. Read CSS custom properties, computed styles, :hover rules and media queries. Convert lab or oklab colors to hex through a 1px canvas. Counts come from real traversal. Report source type, global counts, a section table (position, height, contents), unreadable areas and the brand-boundary list. Wait for confirmation unless told to continue.
+Work section by section. Inventory node types, text styles, colors and gradients, borders, radii, shadows, spacing, layout, icons and SVG compositions, images, decorative geometry, repeated and unique structures, interaction states, responsive variations. Take every component and its parts from the Step 2b anatomy tables, and every media treatment, pattern and style rule from Step 2c, instead of re-measuring them here. Read CSS custom properties, computed styles, :hover rules and media queries. Convert lab or oklab colors to hex through a 1px canvas. Counts come from real traversal. Report source type, global counts, a section table (position, height, contents), unreadable areas and the brand-boundary list. Wait for confirmation unless told to continue.
 
 ### Visual format
 Three documentation boards, 1440 wide, white, 64px margins, editorial style:
@@ -230,6 +280,7 @@ Build the boards as detailed visual specimens comparable to a production design-
 - **02 Controls and components:** button variant × state × size matrices; inverse controls; navigation, tabs, chips, selects, list rows, icon buttons and form states; then every reusable component rendered with real content, variants, annotations and origin labels; include generated feedback states such as toast, alert, empty state and skeleton.
 - **03 Patterns, graphics and rules:** miniature section-pattern previews; actual reusable source graphics; asset-classification table; responsive breakpoint and motion tables; mobile reflow preview; coverage metrics and per-item matrix; usage rules with visual do/don't examples; final limitations and extraction totals.
 - Use visual previews wherever the source contains a visual pattern. Do not replace a component, section, graphic, grid, responsive behavior or state with only a written description.
+- **Media specimens:** on board 03 under 09 Graphic language, add a Media and visual treatment section. Show each treatment row on neutral placeholder media with ratio, crop, radius, overlay, filter and state variants. Show video player and thumbnail card anatomy with measured parts, pattern tiles with their spec line, avatar scale and stack, and the visual style rules with their origin labels. Never use the source's photos or videos as the specimen unless the user owns them, and label any that appear as reference only.
 - **Anatomy specimens:** on board 02, show every component beside its exploded view. Label each part with its Part ID, size, padding and gap to neighbors, type spec, and origin. Draw spacing as measured bars between parts, not as prose. Show the nesting tree and the per-part state changes.
 - Every specimen includes its name, relevant value or token, and origin label. Keep annotations compact and secondary to the rendered example.
 - Use the source's real graphics for reusable graphic-language examples. Clearly mark brand-specific assets as reference-only.
@@ -245,10 +296,10 @@ Foundations, atomic elements, controls with every state, groups and components, 
 Interaction states, form fields with helper and error text, feedback (alert, toast, empty state, skeleton), tablet and mobile reflow, motion and reduced motion, inverse surfaces, accessibility (contrast per pair, touch targets, focus ring). Follow source proportions, radius, color logic and type voice.
 
 ### Brand boundaries
-Logos, brand marks, mascots, customer logos, photography and copy are Source-specific. They appear as reference only. Reusable interface graphics and decorative patterns may be reused as structure in new work.
+Logos, brand marks, mascots, customer logos, photography, video footage and copy are Source-specific. They appear as reference only. Reusable interface graphics and decorative patterns may be reused as structure in new work. Media treatment rules from Step 2c (ratio, crop, radius, overlay, filter, motion) are reusable structure and may be applied to new media.
 
 ### Coverage matrix, usage rules, validation
-Every pattern gets one status: token, reusable component, section pattern, graphic asset, or source-specific. Every part in the Step 2b inventory also gets a status, so no part is documented only inside its parent. Totals for nodes, text styles, colors, icons, SVG, images, controls, cards, nav patterns, sections, components, parts, items per origin label. Usage rules for grid and rhythm, buttons and cards, type pairing, color ratios, graphic composition, do and don't. Validate against the capture section by section and list the source's contrast failures so new work fixes them.
+Every pattern gets one status: token, reusable component, section pattern, graphic asset, or source-specific. Every part in the Step 2b inventory also gets a status, so no part is documented only inside its parent. Totals for nodes, text styles, colors, icons, SVG, images, videos, thumbnails, patterns, media treatment rows, controls, cards, nav patterns, sections, components, parts, items per origin label. Usage rules for grid and rhythm, buttons and cards, type pairing, color ratios, graphic composition, do and don't. Validate against the capture section by section and list the source's contrast failures so new work fixes them.
 
 ---
 
@@ -300,6 +351,7 @@ Completion also requires:
 - Keyboard focus, contrast, reduced motion, touch targets, and responsive reflow have been checked.
 - The coverage matrix accounts for every inspected item without double counting.
 - Every component has an anatomy table, and its rebuild was checked against the capture overlay within the stated tolerance or the gap is recorded.
+- Every media type in the capture (image, photo, video, thumbnail, avatar, illustration, pattern) has a treatment row, and the visual style summary cites the rows it came from.
 - Brand-specific and licensed assets are clearly separated from reusable structure.
 - Assumptions, substitutions, unresolved gaps, and source provenance are recorded.
 
@@ -313,6 +365,9 @@ Completion also requires:
 | Screenshot is the only source | Rebuild with editable primitives, decompose into parts on zoomed crops (Step 2b), and label all visually measured values Estimated |
 | Parts are too small or blurry to measure | Request a higher resolution crop or the live source, record the part as unreadable with the reason, and do not invent values |
 | Rebuilt component does not match the overlay | Re-measure the part that drifts, correct its row in the anatomy table, rebuild, and repeat until within tolerance or record the gap |
+| Video or media controls are visible only on hover or playback | Record the visible state, derive the hidden states as Generated from the same part styles, and say which states were never observed |
+| Pattern or texture is a compressed raster and its tile cannot be measured | Measure one repeat on a zoomed crop, mark the values Estimated, and rebuild the pattern from tokens instead of reusing the raster |
+| Source media cannot be reused or its license is unknown | Keep it reference only, extract the treatment rules, and show specimens on neutral placeholder media |
 | Part is hidden by an overlay, clip or truncation | Record the visible portion, mark the rest Inferred or Generated, and note the dependency on content length |
 | Licensed font is unavailable | Use the closest open substitute and record the substitution on board 01 |
 | Design tool lacks HTML import or variables | Use the closest editable primitives and document the tooling limitation |
