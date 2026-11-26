@@ -66,7 +66,8 @@ function copy(text){
 - Build the Markdown from the same data arrays that render the page (colors, type, atoms, molecules, organisms, anatomy, sections) and from the rendered tables, so the page and the file never disagree.
 - Structure: `references/design-md.md`.
 - **Copy DESIGN.md**: writes the full text to the clipboard.
-- **Download DESIGN.md**: `new Blob([md],{type:'text/markdown'})` → object URL → `<a download="DESIGN.md">` click → revoke URL.
+- **Download DESIGN.md**: only when the guide is a standalone HTML file: `new Blob([md],{type:'text/markdown'})` → object URL → `<a download="DESIGN.md">` click → revoke URL. Artifact viewers block every download a page starts, so in an Artifact replace Download with **Show full file** (a `<pre>` with the whole Markdown, selectable) and publish `DESIGN.md` beside the page as a real file; also hand the user the file directly.
+- If `navigator.clipboard` is refused, fall back to a hidden textarea + `execCommand('copy')`, and if that fails too, reveal the full text in the `<pre>` for manual selection.
 - Show a collapsible "DESIGN.md structure" panel with the outline (H1/H2/H3) so the user sees what the file contains before copying.
 
 ## Rules

@@ -2,6 +2,10 @@
 
 All notable user-facing changes are documented here.
 
+## 2.0.1 — 2026-11-26
+
+- Artifact hosts block downloads: DESIGN.md is delivered by Copy, a Show-full-file panel and a companion DESIGN.md file. Tested on fourmula.ai.
+
 ## 2.0.0 — 2026-11-26
 
 - Reorganized the system into an 8-level hierarchy plus coverage (00 Source capture → 09 Coverage) with A/M/O/S/T/J codes shared by HTML, DESIGN.md and Figma.
