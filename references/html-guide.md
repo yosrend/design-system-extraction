@@ -66,7 +66,18 @@ function copy(text){
 - Build the Markdown from the same data arrays that render the page (colors, type, atoms, molecules, organisms, anatomy, sections) and from the rendered tables, so the page and the file never disagree.
 - Structure: `references/design-md.md`.
 - **Copy DESIGN.md**: writes the full text to the clipboard.
-- **Download DESIGN.md**: only when the guide is a standalone HTML file: `new Blob([md],{type:'text/markdown'})` → object URL → `<a download="DESIGN.md">` click → revoke URL. Artifact viewers block every download a page starts, so in an Artifact replace Download with **Show full file** (a `<pre>` with the whole Markdown, selectable) and publish `DESIGN.md` beside the page as a real file; also hand the user the file directly.
+- **Download DESIGN.md**:
+  - Standalone HTML file: `new Blob([md],{type:'text/markdown'})` → object URL → `<a download="DESIGN.md">` click → revoke URL.
+  - Artifact: the viewer ignores plain download links, so publish with `capabilities: {downloads: true}` and save through the runtime:
+    ```js
+    let dl=null; window.claude?.use?.('downloads').then(d=>dl=d).catch(()=>{});
+    function download(){
+      if(dl) return dl.save({filename:'DESIGN.md',data:new Blob([fullMd()],{type:'text/markdown'})}).catch(()=>copy(fullMd()));
+      // no capability in this view: blob link (works in a local file), else Copy
+    }
+    ```
+    The viewer may confirm or decline the save; treat a rejection as "copy instead". When `use('downloads')` resolves `null`, show **Show full file** (a `<pre>` with the whole Markdown) next to Copy.
+  - In every case also publish `DESIGN.md` beside the page as a real file and hand it to the user directly.
 - If `navigator.clipboard` is refused, fall back to a hidden textarea + `execCommand('copy')`, and if that fails too, reveal the full text in the `<pre>` for manual selection.
 - Show a collapsible "DESIGN.md structure" panel with the outline (H1/H2/H3) so the user sees what the file contains before copying.
 
