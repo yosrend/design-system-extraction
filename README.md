@@ -18,50 +18,6 @@ Most extraction workflows stop at a token list. This skill requires a visible, e
 - Accessibility checks, source provenance, coverage matrix, and documented limitations
 - **Optional Figma handoff**: after the HTML guide, the agent asks whether to send the system to Figma. Yes → one "Design System" page with a Section per level, variables, text styles and real components built from instances. No → the workflow ends at HTML + DESIGN.md.
 
-## Sample output
-
-From a test run on a public site (fourmula.ai, 26 Nov 2026). Source photos and logos are left out; only the rebuilt guide is shown.
-
-**Page structure.** Sticky index 00 Overview → 09 Coverage → DESIGN.md export, origin legend, and the Copy CSS / Copy DESIGN.md / Download DESIGN.md toolbar.
-
-![Guide page structure and index](docs/images/01-page-structure.png)
-
-**01 Tokens: colors.** Every swatch has a copy icon that copies its CSS variable.
-
-![Color tokens](docs/images/02-tokens-colors.png)
-
-**01 Tokens: typography.** Live specimens with spec line, use, and a copy icon per style.
-
-![Typography](docs/images/03-typography.png)
-
-**02 Atoms.** Live rebuilt components with Copy HTML and Copy MD on every card.
-
-![Atoms with copy icons](docs/images/04-atoms-copy-icons.png)
-
-**DESIGN.md export.** File structure panel and the generated Markdown.
-
-![DESIGN.md structure](docs/images/05-design-md-structure.png)
-
-DESIGN.md file structure:
-
-```text
-DESIGN.md
-├─ # [Brand] Design System        source, viewport, origin legend
-├─ ## 00 Overview                 character, grid, unit
-├─ ## 01 Tokens                   color · typography · spacing & grid · radius, effects, motion · CSS
-├─ ## 02 Atoms                    ### A-xx name · made of · states · ```html```
-├─ ## 03 Molecules                ### M-xx name · made of · ```html```
-├─ ## 04 Organisms                anatomy table · ### O-xx · ```html```
-├─ ## 05 Sections & templates     S-xx · ground · organisms used · T-xx slots
-├─ ## 06 Pages                    section order and rhythm
-├─ ## 07 Flows                    J-xx journeys
-├─ ## 08 Product & rules          experience · take vs leave · usage rules · limitations · changelog
-├─ ## 09 Coverage                 totals · matrix (item, code, level, location, status)
-└─ ## Appendix: component CSS     ```css``` (same as Copy CSS)
-```
-
-Full spec: [references/design-md.md](references/design-md.md).
-
 ## Workflow
 
 ```text
@@ -73,6 +29,39 @@ Reference → Capture → Decompose parts → Media rules → Extract 8 levels
 ```
 
 Reference files: [HTML guide spec](references/html-guide.md) · [DESIGN.md structure](references/design-md.md) · [Figma handoff recipe](references/figma-handoff.md)
+
+## Sample output
+
+Test run on a public landing page (fourmula.ai, 1440 × 900). Full Markdown export: [examples/fourmula/DESIGN.md](examples/fourmula/DESIGN.md).
+
+| Structure: 00 Overview + level index 00–09 | Tokens: colors and step gradients |
+| --- | --- |
+| ![Level index and overview](assets/samples/05-structure-00-overview.png) | ![Color and gradient tokens](assets/samples/01-tokens-colors.png) |
+| **Typography scale with copy-CSS per row** | **Atoms with copy-HTML per card** |
+| ![Typography](assets/samples/02-typography.png) | ![Atoms](assets/samples/03-atoms.png) |
+| **Organism rebuild (step slide)** | **09 Coverage: totals + matrix** |
+| ![Organism](assets/samples/04-organism-step-slide.png) | ![Coverage](assets/samples/06-coverage.png) |
+| **DESIGN.md structure (outline)** | **DESIGN.md text (generated file)** |
+| ![DESIGN.md structure](assets/samples/07-design-md-structure.png) | ![DESIGN.md text](assets/samples/08-design-md-text.png) |
+
+### DESIGN.md file structure
+
+```text
+# [Brand] Design System          source, date, viewport, origin labels, shared codes
+## 00 Overview                   character table (grounds, type, color, grid, shape)
+## 01 Tokens                     Color · Gradients · Typography · Spacing/radius/layout · Effects & motion
+## 02 Atoms                      ### A-xx Name — made of + html snippet
+## 03 Molecules                  ### M-xx Name — made of atom codes + html snippet
+## 04 Organisms                  Anatomy table + ### O-xx live rebuilds
+## 05 Sections & templates       section list (ground, height, codes) + T-xx templates
+## 06 Pages                      page rhythm
+## 07 Flows                      J-xx journeys
+## 08 Product & rules            usage rules · take vs leave · limitations · changelog
+## 09 Coverage                   totals + matrix (item · code · level · location · status)
+## Appendix — component CSS      tokens as CSS variables + component classes
+```
+
+Brand logos, photography and copy of the tested site appear only as reference; the copyable components use neutral placeholders.
 
 ## Install
 
