@@ -10,12 +10,25 @@ Most extraction workflows stop at a token list. This skill requires a visible, e
 
 ## What it produces
 
-- Editable source capture or the closest supported equivalent
-- Foundations: color, typography, spacing, grid, radii, borders, effects, and icons
-- Controls and components with variants and interaction states
-- Patterns, graphics, responsive behavior, motion, coverage, and usage rules
+- Source capture: one screenshot (or editable render) per section at the source width
+- A **Live HTML guide** organized by an 8-level hierarchy: 01 Tokens · 02 Atoms · 03 Molecules · 04 Organisms · 05 Sections & templates · 06 Pages · 07 Flows · 08 Product & rules · 09 Coverage
+- Live rebuilt components with a **copy icon on every part** (HTML, CSS, Markdown) and a Copy CSS button
+- A **DESIGN.md** export (copy or download) with a fixed structure any agent or repo can consume
 - Origin labels for extracted, estimated, inferred, generated, source-specific, and updated values
-- Accessibility checks, source provenance, and documented limitations
+- Accessibility checks, source provenance, coverage matrix, and documented limitations
+- **Optional Figma handoff**: after the HTML guide, the agent asks whether to send the system to Figma. Yes → one "Design System" page with a Section per level, variables, text styles and real components built from instances. No → the workflow ends at HTML + DESIGN.md.
+
+## Workflow
+
+```text
+Reference → Capture → Decompose parts → Media rules → Extract 8 levels
+  → Live HTML guide + DESIGN.md   (default endpoint)
+  → "Send to Figma?"  ── no ──▶ done
+                      └─ yes ─▶ Figma "Design System" page (Sections 00–09)
+  → optional: build a new page, iterate, sync, variations, mobile
+```
+
+Reference files: [HTML guide spec](references/html-guide.md) · [DESIGN.md structure](references/design-md.md) · [Figma handoff recipe](references/figma-handoff.md)
 
 ## Install
 
@@ -101,16 +114,16 @@ npx skills add yosrend/design-system-extraction --list
 ## Required deliverables
 
 1. Source capture preserved beside the system.
-2. Foundations board: color, type, spacing, grid, radius, effects, and icons.
-3. Controls and components board with variants and states.
-4. Patterns, graphics, responsive behavior, motion, coverage, and usage rules.
-5. Origin labels, accessibility checks, source provenance, and limitations.
+2. Live HTML guide with levels 00–09, copy-HTML on every part, Copy CSS, Copy/Download DESIGN.md.
+3. DESIGN.md in the fixed structure.
+4. Origin labels, accessibility checks, coverage matrix, source provenance, and limitations.
+5. Figma "Design System" page — only when the user opts in.
 
 Values are labeled as **Extracted**, **Estimated**, **Inferred**, **Generated**, **Source-specific**, or **Updated**.
 
 ## Example
 
-> Extract a reusable design system from this authorized URL and build the boards in Figma. Use a 1440 × 900 viewport, preserve the source capture, and label all estimated values.
+> Extract a reusable design system from this authorized URL at 1680 wide. Build the HTML guide with copy icons and DESIGN.md, then ask me whether to send it to Figma.
 
 The workflow is tool-agnostic and adapts to Claude Design, Figma, Pencil, Paper, or another editable design environment available to the host agent.
 

@@ -1,8 +1,12 @@
 # Example Prompts
 
-## Live website
+## Live website (HTML first)
 
-> Extract a reusable design system from this authorized URL in Figma. Capture the page at 1440 × 900, preserve the editable source beside the documentation boards, use the real reusable graphics, and label every value by origin. Stop after the audit for confirmation, then build all three boards.
+> Extract a reusable design system from this authorized URL at 1680 wide. Build the Live HTML guide (levels 00–09, copy icon on every part, Copy CSS, DESIGN.md export), label every value by origin, then ask me whether to send it to Figma.
+
+## HTML, then Figma handoff
+
+> Same extraction, and when the HTML guide is done send it to my Figma file [URL]: one "Design System" page, one Section per level, Coverage separate, variables and components built from instances.
 
 ## Screenshot-only source
 
@@ -18,4 +22,4 @@
 
 ## Sync after feedback
 
-> Apply these targeted changes to the existing page: [feedback]. Then update the design-system boards, mark changed items as Updated, and add a concise changelog entry on board 03.
+> Apply these targeted changes to the existing page: [feedback]. Then update the design-system boards, mark changed items as Updated, and add a concise changelog entry on 08 Product & rules.

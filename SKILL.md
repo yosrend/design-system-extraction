@@ -1,13 +1,15 @@
 ---
 name: "design-system-extraction"
-description: "Extract a complete, reusable design system when users ask to audit a website or app, reverse-engineer UI from a URL or screenshot, turn code or a design file into tokens and components, document responsive and accessibility rules, or build new pages that stay faithful to an existing visual language."
+description: "Extract a complete, reusable design system when users ask to audit a website or app, reverse-engineer UI from a URL or screenshot, turn code or a design file into tokens and components, document responsive and accessibility rules, or build new pages that stay faithful to an existing visual language. Delivers a Live HTML guide (8-level hierarchy, copy-HTML on every part, DESIGN.md export) first, then offers an optional Figma handoff."
 ---
 
 # Design System Extraction
 
 Turn a reference into a system—not a pile of disconnected colors and screenshots.
 
-This skill produces an editable source capture, production-density design-system boards, traceable tokens and components, responsive and accessibility rules, and a repeatable build loop for new pages. Every documented decision stays visibly comparable to its source.
+This skill produces a source capture, a Live HTML design-system guide organized by an 8-level hierarchy (tokens → atoms → molecules → organisms → sections → pages → flows → product rules, plus coverage), a DESIGN.md export, traceable tokens and components, responsive and accessibility rules, and a repeatable build loop for new pages. Every documented decision stays visibly comparable to its source.
+
+**Default endpoint is the HTML guide.** After the HTML guide and DESIGN.md are delivered, ask whether to also send the system to Figma (Step 3c). If the user declines, the skill ends at HTML + DESIGN.md.
 
 ## When to use this skill
 
@@ -31,23 +33,24 @@ Typical phrases include “extract this design system,” “analyze this UI,”
 
 ## What this skill delivers
 
-| Deliverable | Contents |
-| --- | --- |
-| Source capture | Editable render, viewport, provenance, and limitations |
-| 01 Foundations | Color, typography, spacing, grid, radius, borders, effects, and icons |
-| 02 Controls and components | Variants, sizes, states, inverse treatments, forms, navigation, and feedback |
-| 03 Patterns, graphics, and rules | Section patterns, real reusable graphics, responsive behavior, motion, coverage, and usage rules |
-| Validation | Origin labels, accessibility findings, coverage matrix, brand boundaries, and unresolved gaps |
-| Optional build | New desktop page, variations, mobile adaptation, and synchronized system updates |
+| Deliverable | Contents | When |
+| --- | --- | --- |
+| Source capture | Section screenshots or editable render, viewport, provenance, limitations | Always |
+| Live HTML guide | One browsable page, sticky index, levels 00–08 + 09 Coverage, live rebuilt components, a copy-HTML icon on every part, Copy CSS, Copy/Download DESIGN.md | Always (default endpoint) |
+| DESIGN.md | Markdown export of the whole system in a fixed structure (see `references/design-md.md`) so any agent or repo can consume it | Always |
+| Validation | Origin labels, accessibility findings, coverage matrix, brand boundaries, unresolved gaps | Always |
+| Figma handoff | One "Design System" page, one Section per level (00–09), variables, text styles, real components and instances (see `references/figma-handoff.md`) | Only if the user opts in at Step 3c |
+| Optional build | New desktop page, variations, mobile adaptation, synchronized system updates | On request (Steps 4–9) |
 
 ## Minimum input
 
 Ask only for what is missing:
 
 1. One authorized source: URL, screenshot, design file, HTML import, or codebase.
-2. Destination tool: Claude Design, Figma, Pencil, Paper, or another editable canvas.
-3. Target viewport when it differs from the 1440 × 900 desktop default.
-4. Whether to stop after the audit, complete the boards, or also build a new page.
+2. Target viewport when it differs from the 1440 × 900 desktop default (use the source's own width when the user names one, for example 1680).
+3. Whether to stop after the audit, complete the HTML guide, or also build a new page.
+
+Do not ask for a design tool up front. The HTML guide is always built first; Figma (or another canvas) is offered as an option after it (Step 3c).
 
 Role: act as a senior design-systems designer.
 
@@ -80,8 +83,10 @@ Core idea: good AI design comes from a strong reference, a clear design system a
 2. Capture. Bring the source into the canvas as editable HTML with its real graphics
 2b. Decompose. Break every captured component into measured parts (anatomy tables) and verify them against the capture
 2c. Media. Record how images, photos, video, thumbnails, avatars, illustrations and patterns are treated, as rules, not as source files
-3. Extract. Audit, then build the design system boards
-4. Ask. "Apakah kamu mau bikin website baru dengan design system ini?" plus 3 to 4 basic questions
+3. Extract. Audit, then build the 8 hierarchy levels bottom-up
+3b. HTML guide. Publish the Live HTML guide with copy-HTML on every part and the DESIGN.md export
+3c. Offer Figma. Ask whether to send the system to Figma. No = stop here. Yes = build the Figma handoff page
+4. Ask. "Apakah kamu mau bikin website baru dengan design system ini?" (ask after Step 3c, never instead of it) plus 3 to 4 basic questions
 5. Build. Desktop landing page constrained by the design system
 6. Iterate. Specific feedback on the real render, targeted edits
 7. Sync. Update the design system with what the iterations decided
@@ -97,29 +102,47 @@ Core idea: good AI design comes from a strong reference, a clear design system a
 - **Separate structure from identity.** Reuse interface logic and compositional rules; isolate logos, photography, copy, and protected brand assets.
 - **Iterate on the render.** Feedback changes the real page first, then synchronizes back into the system.
 
+## The 8-level hierarchy (used everywhere)
+The same hierarchy drives the HTML guide, DESIGN.md, the Figma handoff and the coverage matrix:
+
+| Level | Code | Contents |
+| --- | --- | --- |
+| 00 Source capture | SRC | Section screenshots or editable render of the source, one per captured section |
+| 01 Tokens | — | Color, type scale, spacing, grid, radius, effects, motion as variables and styles |
+| 02 Atoms | A-xx | Button, icon, label, input, badge, divider, avatar, marker, texture: every single element |
+| 03 Molecules | M-xx | Section tag, form field, list row, price block: small groups of atoms |
+| 04 Organisms | O-xx | Header, hero, card grid, pricing table, FAQ, footer |
+| 05 Sections & templates | S-xx, T-xx | One rebuilt section per captured section, plus layout templates with slots |
+| 06 Pages | — | Each captured page rebuilt from section instances, beside the source |
+| 07 Flows | J-xx | Visitor journeys across the pages |
+| 08 Product & rules | — | Experience, take vs leave, graphic inventory, usage rules, limitations, changelog |
+| 09 Coverage | — | One row per captured section and per component with codes, level, location and status |
+
+Composition rule: a level may only use tokens and instances of smaller levels. An atom uses tokens only. A molecule uses atoms (a molecule may contain a smaller molecule when the spec says so, for example a section header containing the section tag). An organism uses molecules and atoms. A section uses organisms (plus section-level molecules such as headers and quotes). A page uses sections. Nothing is redrawn from scratch when a smaller part already exists.
+
+Work top-down to decompose (section → organism → molecule → atom → token), then build bottom-up in the level order above. Deduplicate: the same button in five sections is one atom with five uses.
+
 ## Output target
-Work in ONE Claude Design canvas (the Design artifact type) by default. Use Pencil, Figma, Paper or another tool only when the user names it.
-- Layout starts with two clearly separated groups from left to right: **CAPTURE WEBSITE** on the left and **DESIGN SYSTEM** on the right. New website boards and variations come only after these groups. Put a title note above each group.
+**Default: the Live HTML guide** (an Artifact when the host supports it, otherwise one self-contained HTML file with its assets beside it). It is always built, even when the user later wants Figma. Spec: `references/html-guide.md`.
+
 - Never modify the source capture.
-- One artboard holds at most 8000px tall. Split long content into several boards.
-- When the tool supports variables or tokens, create them and bind components to them.
+- One artboard or board holds at most 8000px tall. Split long content at section boundaries.
+- After the HTML guide and DESIGN.md are delivered, run Step 3c (offer Figma). Do not build in a design tool before the user opts in, unless the original request already named the tool.
+- When a design tool is used and supports variables or tokens, create them and bind components to them.
 
 If the active tool cannot import editable HTML, preserve the same workflow with the closest editable primitives and clearly label that limitation. Do not claim pixel-exact extraction when only a screenshot was available.
 
-### Mandatory visible canvas arrangement
-
-Always show both the website capture and the design-system previews on the canvas. An audit report or token list alone is not a completed extraction.
+### Visible arrangement in any canvas tool
+When a canvas is used (Figma, Claude Design, Pencil, Paper), the capture and the system must be visible together:
 
 ```text
-[ CAPTURE WEBSITE ]    [ DESIGN SYSTEM ]
-                       [ 01 Foundations ] [ 02 Controls and components ] [ 03 Patterns, graphics and rules ]
+[ 00 SOURCE CAPTURE ]
+[ 01 TOKENS ] [ 02 ATOMS ] … [ 09 COVERAGE ]   (one row per level, or one Section per level stacked top to bottom)
 ```
 
-- The capture group contains the editable HTML render at the audited desktop viewport. If the page exceeds 8000px, split it at section boundaries into vertically aligned capture boards inside the same group.
-- The design-system group begins immediately to the right of the capture group. Keep boards 01, 02 and 03 in numbered reading order, aligned at the top with consistent gaps.
-- Preserve enough whitespace between groups that the source and documentation cannot be mistaken for one continuous page.
-- Never hide the source capture after extraction. The user must be able to compare every documented decision with the rendered source.
-- Before reporting completion, zoom or frame the canvas so the capture group and all three design-system boards are visibly present. Provide a preview image when the tool supports preview/export.
+- Frames inside a level sit in one row, at least 120px apart (160px recommended), equal top edges, no overlap.
+- Never hide the source capture after extraction.
+- Before reporting completion, screenshot every level and provide previews.
 
 ---
 
@@ -148,6 +171,13 @@ Live URL capture recipe:
 6. Pin viewport-height classes (min-h-screen, vh, svh) to 900px values in an override style, since the artboard is taller than a viewport.
 7. Build artboards that link the CSS asset in head and hold the captured HTML. Split tall pages at a section boundary: part 2 uses the same HTML with a negative top margin inside an overflow-hidden root.
 8. Record limitations: sticky or scroll-driven sections render in DOM order, JS-driven animation is frozen.
+
+Section screenshot capture (always do this too, it feeds level 00 and every comparison):
+1. Open the page headless at the target width (Playwright or the host browser), scroll once to load lazy content.
+2. Find section landmarks in the DOM (header, section, footer, or the framework's named layers such as `data-framer-name`) and record each section's top and height.
+3. Hide overlay badges (template badges, cookie bars, remix buttons) with an injected style.
+4. Screenshot each section clip at 1x as JPEG. For the last sections, clip from a full-page capture because the viewport cannot scroll past the page end.
+5. Name files by section number and role (`01-intro.jpg` … `12-footer.jpg`) and keep them beside the guide as reference assets.
 
 Respect robots restrictions, authentication boundaries, license terms, and rate limits. Do not bypass access controls, paywalls, CAPTCHAs, or anti-bot protections. Prefer user-provided exports for restricted sources.
 
@@ -264,33 +294,29 @@ Rebuild one example per treatment row with placeholder media (neutral image bloc
 Work section by section. Inventory node types, text styles, colors and gradients, borders, radii, shadows, spacing, layout, icons and SVG compositions, images, decorative geometry, repeated and unique structures, interaction states, responsive variations. Take every component and its parts from the Step 2b anatomy tables, and every media treatment, pattern and style rule from Step 2c, instead of re-measuring them here. Read CSS custom properties, computed styles, :hover rules and media queries. Convert lab or oklab colors to hex through a 1px canvas. Counts come from real traversal. Report source type, global counts, a section table (position, height, contents), unreadable areas and the brand-boundary list. Wait for confirmation unless told to continue.
 
 ### Visual format
-Three documentation boards, 1440 wide, white, 64px margins, editorial style:
-- Mono breadcrumb "[BRAND] / DESIGN SYSTEM / 01 [PART]", a large title, a short intro, the origin legend
-- Numbered section headers "01 / Color foundations" with a hairline under each
-- Rendered swatches with name, hex and token, type specimens with spec line, spacing bars, radius boxes, shadow cards on a wash stage, live components, mini wireframes, mono rule boxes
-- Board 01 Foundations: 00 Overview, 01 Color (neutrals, inverse, accents, ramps, semantic, usage ratio), 02 Typography, 03 Spacing, sizing and grid, 04 Radius, borders and effects, 05 Iconography
-- Board 02 Controls and components: 06 Controls (variant x state matrix: default, hover, focus, disabled, loading; sizes; inverse; nav, tabs, chips, selects, list rows, icon buttons, form fields), 07 Components (every reusable unit, feedback states)
-- Board 03 Patterns, graphics and rules: 08 Section patterns, 09 Graphic language, 10 Responsive and motion, 11 Coverage matrix, 12 Usage rules, final list and limitations, and a changelog area for Step 7
+Organize the documentation by the 8-level hierarchy, not by three generic boards. Each level (in HTML: one section with an anchor; in a canvas: one Section/board group) has:
+- A mono breadcrumb "[BRAND] / DESIGN SYSTEM / 0X [LEVEL]", a large title, a one-line purpose, what is inside, how to use it for handoff, and the origin legend.
+- Numbered sub-headers "01 / Color" with a hairline under each.
+- Rendered specimens, never prose alone: swatches with name, hex and token; type specimens with spec line; spacing bars; grid diagram with the source's column lines; radius and effect boxes; live components with every state; section rebuilds next to their source screenshot.
+- Each component card shows its code, name, the codes it is made of ("O-13 = A-13 ×2 + A-09 ×3 + M-10 ×3 + M-09 ×3 + A-01 + A-03"), its variant × state matrix, and its origin label.
+
+Documentation sections map to levels: Overview, Color, Typography, Spacing and grid, Radius and effects → 01 Tokens; Iconography, interface graphics, single controls with state matrix → 02 Atoms; grouped controls and small components → 03 Molecules; large components → 04 Organisms; section patterns, decorative compositions, responsive and motion → 05; page rebuilds → 06; journeys → 07; experience, take vs leave, graphic inventory, usage rules, limitations, changelog → 08; coverage matrix and totals → 09.
 
 ### Required preview density and fidelity
 
-Build the boards as detailed visual specimens comparable to a production design-system handoff, not as prose-heavy documentation:
-
-- **01 Foundations:** overview cards and counts; complete color swatches and ramps; semantic colors; usage-ratio strip; full type scale with live specimens and specifications; spacing bars; desktop grid diagram; radius series; border and elevation samples; icon set and icon-construction notes.
-- **02 Controls and components:** button variant × state × size matrices; inverse controls; navigation, tabs, chips, selects, list rows, icon buttons and form states; then every reusable component rendered with real content, variants, annotations and origin labels; include generated feedback states such as toast, alert, empty state and skeleton.
-- **03 Patterns, graphics and rules:** miniature section-pattern previews; actual reusable source graphics; asset-classification table; responsive breakpoint and motion tables; mobile reflow preview; coverage metrics and per-item matrix; usage rules with visual do/don't examples; final limitations and extraction totals.
-- Use visual previews wherever the source contains a visual pattern. Do not replace a component, section, graphic, grid, responsive behavior or state with only a written description.
-- **Media specimens:** on board 03 under 09 Graphic language, add a Media and visual treatment section. Show each treatment row on neutral placeholder media with ratio, crop, radius, overlay, filter and state variants. Show video player and thumbnail card anatomy with measured parts, pattern tiles with their spec line, avatar scale and stack, and the visual style rules with their origin labels. Never use the source's photos or videos as the specimen unless the user owns them, and label any that appear as reference only.
-- **Anatomy specimens:** on board 02, show every component beside its exploded view. Label each part with its Part ID, size, padding and gap to neighbors, type spec, and origin. Draw spacing as measured bars between parts, not as prose. Show the nesting tree and the per-part state changes.
-- Every specimen includes its name, relevant value or token, and origin label. Keep annotations compact and secondary to the rendered example.
-- Use the source's real graphics for reusable graphic-language examples. Clearly mark brand-specific assets as reference-only.
-- Export or show each completed board at a scale where its overall structure and specimen density are visible, matching the detail level of the user's provided Gumloop reference boards.
+- **01 Tokens:** overview cards and counts; complete color swatches, semantic colors and usage ratio; full type scale with live specimens; spacing bars; grid diagram (columns, gutter, margin, rows, accent axis if the source has one); radius series; effects (or "none" stated explicitly).
+- **02 Atoms:** button variant × state matrices (default, hover, focus, disabled, loading where relevant); inverse variants; icon tiles, markers, chips, tags, inputs, toggles, carousel controls; textures and overlays (grid overlay, halftone, grain, dither) as reusable atoms.
+- **03–04:** every reusable unit rendered with neutral content, its exploded parts (Step 2b) and its "made of" codes; generated feedback states (toast, alert, empty, skeleton) where the source lacks them.
+- **05–06:** every captured section rebuilt from organism instances at the source width beside its screenshot; layout templates with labelled slots; the full page rebuilt from section instances.
+- **07–09:** journeys as section thumbnails with arrows; take vs leave; graphic inventory tiles (reusable vs Source-specific); usage rules; limitations; coverage matrix with a status per row and totals per level.
+- **Media specimens:** show each media treatment row (Step 2c) on neutral placeholder media. Never use the source's photos or videos as specimens unless the user owns them; label any that appear as reference only.
+- Every specimen includes its name, token or value, and origin label. Keep annotations compact and secondary to the rendered example.
 
 ### Use the real graphics
 The graphic language section shows the source's actual graphics from the capture (uploaded SVGs, images, pattern files, and crops of illustration compositions), not redrawn approximations. Classify each: reusable interface graphic, reusable decorative composition or pattern, campaign-specific artwork, photography, logo or brand mark. Inspect parent compositions instead of counting SVG paths as icons.
 
 ### Extract by hierarchy
-Foundations, atomic elements, controls with every state, groups and components, section patterns with grid, spacing, hierarchy and relationship to neighbors. Component naming Category/Component/Variant/State. Token naming color.text.primary, space.4, radius.md, shadow.sm.
+Tokens, atoms, molecules, organisms, sections, pages, flows, product rules, coverage. Component naming: code + path, for example `A-01 Button/Light`, with variants as properties (`State=Hover`). Token naming by role with slashes so tools group them: `bg/canvas`, `ink/default`, `accent/default`, `space/16`, `radius/none`, `size/btn-h`, `grid/col`. The same codes are used in the HTML guide, DESIGN.md and Figma, so `A-01` means the same thing everywhere.
 
 ### Complete what the source lacks (label Generated)
 Interaction states, form fields with helper and error text, feedback (alert, toast, empty state, skeleton), tablet and mobile reflow, motion and reduced motion, inverse surfaces, accessibility (contrast per pair, touch targets, focus ring). Follow source proportions, radius, color logic and type voice.
@@ -302,6 +328,29 @@ Logos, brand marks, mascots, customer logos, photography, video footage and copy
 Every pattern gets one status: token, reusable component, section pattern, graphic asset, or source-specific. Every part in the Step 2b inventory also gets a status, so no part is documented only inside its parent. Totals for nodes, text styles, colors, icons, SVG, images, videos, thumbnails, patterns, media treatment rows, controls, cards, nav patterns, sections, components, parts, items per origin label. Usage rules for grid and rhythm, buttons and cards, type pairing, color ratios, graphic composition, do and don't. Validate against the capture section by section and list the source's contrast failures so new work fixes them.
 
 ---
+
+## Step 3b. Deliver the Live HTML guide (default endpoint)
+Build and publish the guide described in `references/html-guide.md`. Mandatory features:
+- Sticky side index with one entry per level (00–09). Each level is one `<section>` with an anchor, breadcrumb, title, purpose line and origin legend.
+- Every component (A, M, O) is live HTML/CSS with neutral copy, never only an image. Every part has a **copy icon** that copies its HTML: component cards, color swatches (CSS variable line), type rows (CSS class), section rows (structure), tables (Markdown), and a copy icon on every level heading that copies that level as Markdown.
+- One **Copy CSS** button for the shared component stylesheet (tokens as CSS custom properties + component classes), kept in its own `<style id="ds">` block.
+- **Copy DESIGN.md** and **Download DESIGN.md** buttons that generate the full DESIGN.md from the page data in the structure of `references/design-md.md`, plus a visible "DESIGN.md structure" panel showing the outline so the user knows what they get.
+- Source screenshots above each section group, captioned with the codes they use.
+- Clipboard: `navigator.clipboard.writeText` inside the click handler with a textarea fallback and a short "Copied" toast.
+
+Report the link, the totals per level and the coverage status before moving on.
+
+## Step 3c. Offer the Figma handoff (optional)
+After the HTML guide is delivered, ask once, in the user's language (AskUserQuestion when available):
+
+"Design system versi HTML + DESIGN.md sudah jadi. Mau saya kirim juga ke Figma?"
+1. **Ya, kirim ke Figma** — I need the Figma file URL and the Desktop Bridge (figma-console) plugin running in that file, or the official Figma MCP connected.
+2. **Tidak, cukup HTML** — the skill ends here with the HTML guide + DESIGN.md.
+
+- If the user says no, or does not answer, stop at HTML. Do not open or modify any design file.
+- If the original request already named Figma (or another tool), skip the question and build it after the HTML guide.
+- If yes, follow `references/figma-handoff.md`: one page named "Design System", one Figma Section per level stacked top to bottom (00 Source capture … 09 Coverage) with an Index frame at the top, variables + text styles bound everywhere, every reusable unit a real component (sets with variant × state), larger levels built only from instances of smaller ones, a note frame first in every Section, Coverage and Totals in their own Section, prototype links for the journeys.
+- Never delete or overwrite existing pages or content in the user's file. Only add the "Design System" page (or reuse an empty page when the plan limits page count, and say so).
 
 ## Step 4. Ask before building
 When the design system is delivered, ask in the user's language:
@@ -330,7 +379,7 @@ Do not expect the first version to be final. After delivering, invite specific f
 - If feedback is vague, offer 2 or 3 concrete options instead of guessing
 
 ## Step 7. Sync the design system
-When the user is happy with the page, or says to lock it in, update the design system boards to match every decision from the iterations (new radius, spacing, colors, component variants). Tag changed items Updated and add a short changelog entry on board 03. From here the design system is the single source of truth.
+When the user is happy with the page, or says to lock it in, update the design system levels to match every decision from the iterations (new radius, spacing, colors, component variants). Tag changed items Updated and add a short changelog entry on level 08 (Product & rules), in the HTML guide and, if it exists, in Figma. From here the design system is the single source of truth.
 
 ## Step 8. Explore variations
 Before committing, or when asked, produce 2 to 3 variations side by side as separate artboards: color direction, type pairing, or layout. Each variation stays inside the design system rules unless the user asks to push beyond them. Let the user pick or mix, then run Step 7 again.
@@ -346,7 +395,8 @@ Only when the user asks in a new request:
 Do not claim the extraction is complete until every element in the source has been inspected and classified. Close each phase with a short list: extracted elements, reusable components, graphic assets, section patterns, generated additions, source-specific elements, remaining limitations.
 
 Completion also requires:
-- The capture and all three documentation boards are visible together.
+- The HTML guide is published with all levels 00–09, a copy icon on every part, Copy CSS, and a working DESIGN.md copy/download.
+- The user was asked about Figma (Step 3c) and the answer was respected; when Figma was built, every level Section exists, component and variable counts were read back, and nesting gates passed.
 - Tokens and component names are consistent and machine-readable.
 - Keyboard focus, contrast, reduced motion, touch targets, and responsive reflow have been checked.
 - The coverage matrix accounts for every inspected item without double counting.
@@ -369,8 +419,12 @@ Completion also requires:
 | Pattern or texture is a compressed raster and its tile cannot be measured | Measure one repeat on a zoomed crop, mark the values Estimated, and rebuild the pattern from tokens instead of reusing the raster |
 | Source media cannot be reused or its license is unknown | Keep it reference only, extract the treatment rules, and show specimens on neutral placeholder media |
 | Part is hidden by an overlay, clip or truncation | Record the visible portion, mark the rest Inferred or Generated, and note the dependency on content length |
-| Licensed font is unavailable | Use the closest open substitute and record the substitution on board 01 |
+| Licensed font is unavailable | Use the closest open substitute and record the substitution on 01 Tokens |
 | Design tool lacks HTML import or variables | Use the closest editable primitives and document the tooling limitation |
+| Figma plugin bridge is disconnected | Ask the user to open the file and run the Desktop Bridge plugin, then continue where you stopped; never fall back to editing another file |
+| Figma Free plan page limit (3 pages) | Use one "Design System" page with one Section per level; never delete user pages to make room |
+| Layers disappear mid-build | Another session or an Undo is touching the file: tell the user, ask them not to edit, rebuild the missing parts and re-read counts |
+| Images cannot be uploaded to Figma | Serve them from a local port the plugin manifest allows and `fetch` them inside the plugin, or pass small base64 images; never leave gray placeholder boxes |
 | Source contains inconsistent patterns | Preserve the evidence, identify the inconsistency, and propose a Generated normalization separately |
 
 ## Final response contract
@@ -383,14 +437,18 @@ Close the work with a compact handoff containing:
 4. Generated additions and accessibility fixes.
 5. Source-specific items excluded from reuse.
 6. Remaining limitations and substitutions.
-7. Link or preview for the editable canvas.
-8. One clear next action: build a page, explore variations, sync feedback, or expand responsively.
+7. Link to the HTML guide, the DESIGN.md, and (if built) the Figma page with its Section list.
+8. The Figma question (Step 3c) if it has not been answered yet, otherwise one clear next action: build a page, explore variations, sync feedback, or expand responsively.
 
 ## Example requests
 
 ### Live website to system
 
-> Extract a reusable design system from this authorized URL in Figma. Capture it at 1440 × 900, preserve the editable source beside the boards, use its real reusable graphics, and label every value by origin. Stop after the audit for confirmation.
+> Extract a reusable design system from this authorized URL. Capture it at 1680 wide, build the Live HTML guide with copy-HTML on every part and a DESIGN.md export, label every value by origin, then ask me whether to send it to Figma.
+
+### HTML guide, then Figma
+
+> Extract the design system of this URL, same structure as the previous guide. When the HTML is done, send it to my Figma file [URL] as one "Design System" page with a Section per level and Coverage separate.
 
 ### Screenshot-only reconstruction
 
