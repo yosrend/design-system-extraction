@@ -11,6 +11,8 @@ Turn a reference into a system—not a pile of disconnected colors and screensho
 
 This skill always produces a Live HTML guide and a DESIGN.md of the source: traceable tokens and components with copyable code, responsive and accessibility rules, and coverage. On request it hands the same system to a design tool and runs a build loop for new pages. Every documented decision stays visibly comparable to its source.
 
+Canonical source of this skill: https://github.com/yosrend/design-system-extraction (SKILL.md). Keep both in sync.
+
 ## When to use this skill
 
 Use it when the user wants to:
@@ -30,7 +32,6 @@ Typical phrases include “extract this design system,” “analyze this UI,”
 - The request is only for a moodboard, brand strategy, logo, or illustration.
 - The source is private, restricted, or licensed and the user cannot confirm permission.
 - The user wants an exact clone that would reuse protected brand assets or impersonate the source.
-
 
 ## What this skill delivers
 
@@ -77,7 +78,6 @@ Core idea: good AI design comes from a strong reference, a clear design system a
 | Screenshot or image | Estimated | Segment into regions, decompose every component into parts, measure on zoomed crops (Step 2b), preserve the reference, and label measurements Estimated |
 | Restricted or authenticated source | User-authorized only | Prefer a user-provided export; never bypass access controls |
 
-
 ## The loop at a glance
 
 Phase A, always:
@@ -115,7 +115,6 @@ The same hierarchy drives the design tool, the Live HTML guide and the coverage 
 8. Product / Experience: what the whole site feels like, its rhythm, what we take vs leave, coverage and usage rules
 
 Composition rule: a level may only use tokens and instances of the levels above it in this list (smaller levels). An atom uses tokens only. A molecule uses atoms. An organism uses molecules and atoms. A section uses organisms. A page uses sections. Nothing is redrawn from scratch when a smaller part already exists.
-
 
 ## Phase A deliverable: Live HTML guide and DESIGN.md
 
@@ -369,9 +368,9 @@ Do not build everything in one pass. Build one level at a time in this order, an
 5. 05 Sections & templates: built from organism instances, plus layout templates with slots and decorative compositions. Gate: every captured section has a rebuilt section here.
 6. 06 Pages: each captured page rebuilt from section instances, with the source screenshot beside it for comparison. Gate: rebuilt page matches the capture section for section.
 7. 07 Flows: the page frames in visitor order, connected with prototype links or arrows, one row per journey.
-8. 08 Product & rules: experience summary, take vs leave, graphic inventory of source-specific assets, coverage matrix, usage rules, limitations and the Step 7 changelog area.
+8. 08 Product & rules: experience summary, take vs leave, graphic inventory of source-specific assets, usage rules, limitations and the Step 7 changelog area. 09 Coverage: coverage matrix and totals.
 
-Level gate procedure (every level from 03 up): read back each component on the page with its children, list the main component of every nested instance, and confirm each one belongs to a smaller level. Any child that looks like an existing component but is a plain frame or a detached instance is a failure: replace it with the instance. Report per level: component count, instance count, and failures fixed. After each level, also run the Visual QA checks for that page before moving on. Place each new board to the right of the previous one with a gap, never over it.
+Level gate procedure (every level from 03 up): read back each component on the page with its children, list the main component of every nested instance, and confirm each one belongs to a smaller level. Any child that looks like an existing component but is a plain frame or a detached instance is a failure: replace it with the instance. Report per level: component count, instance count, and failures fixed. After each level, also run the Visual QA checks for that page before moving on. Place each new board next to the previous one with a gap, never over it.
 
 ### Visual QA before delivery
 Counting items is not enough. After building, look at the result.
@@ -379,12 +378,12 @@ Counting items is not enough. After building, look at the result.
 2. Asset tiles: open every tile in the graphic inventory. A tile that is blank, solid black, or solid white is a failed extraction. Re-extract it (for canvas, video or shader elements, render a still or screenshot of the element) or list it under limitations with the reason.
 3. Placeholders: no gray or colored placeholder box may remain when a real asset from the capture fits that slot. Section patterns, graphic language, media treatment and responsive previews use the real assets, cropped to the pattern they illustrate.
 4. Component coverage: every repeated pattern in the audit table (nav, cards, pricing, FAQ rows, forms, badges, footer, feedback states) has a registered component on its level. Compare the component list against the audit table and add what is missing.
-5. Layout, checked with data and not by eye: read the x, y, width and height of every top-level frame and every label from the file, and list them. No two frames may overlap. Frames sit in one row (or one per page) with at least 120px between them and equal top edges. No label may overlap another label. Then check visually: no clipped text, no panel with more than about 30% empty height, tables with aligned columns. Minimum text size 12px for labels and 14px for body copy. Move or resize elements and re-read the numbers until clean.
-5a. Required content: 01 Tokens holds 00 Overview, 01 Color, 02 Typography, 03 Spacing, 04 Radius and effects. 02 Atoms holds 05 Iconography and the single controls of 06 Controls. 03 Molecules and 04 Organisms hold the grouped controls and 07 Components. 05 holds 08 Section patterns and 10 Responsive and motion. 08 holds 09 Graphic inventory, 11 Coverage matrix and 12 Usage rules. Check each one by name and confirm it has content. A missing or empty section is a failure, even when the item counts match.
-5b. No duplicate content: each component's main lives on exactly one level page; other places use instances. Never place a frame on top of another frame.
+5. Layout, checked with data and not by eye: read the x, y, width and height of every top-level frame and every label from the file, and list them. No two frames may overlap. Frames sit in one row per Section with at least 120px between them and equal top edges. No label may overlap another label. Then check visually: no clipped text, no panel with more than about 30% empty height, tables with aligned columns. Minimum text size 12px for labels and 14px for body copy. Move or resize elements and re-read the numbers until clean.
+5a. Required content: 01 Tokens holds overview, color, typography, spacing, radius and effects. 02 Atoms holds iconography and the single controls. 03 Molecules and 04 Organisms hold the grouped controls and components. 05 holds section patterns, responsive and motion. 08 holds graphic inventory and usage rules. 09 holds coverage matrix and totals. Check each one by name and confirm it has content. A missing or empty section is a failure, even when the item counts match.
+5b. No duplicate content: each component's main lives on exactly one level; other places use instances. Never place a frame on top of another frame.
 5c. A black, blank or white asset tile is a failure and cannot be reported as a limitation until a still or screenshot of the element has been tried.
 5d. Components must look like components: a pricing plan is a card with price, list and button, a nav is a nav bar, FAQ rows are rows with separators, alerts and skeletons use the system sizes.
-5e. Evidence: save a screenshot of every level page after the last fix and cite the frame coordinates. Never write Pass for a check that was not measured or looked at.
+5e. Evidence: save a screenshot of every level after the last fix and cite the frame coordinates. Never write Pass for a check that was not measured or looked at.
 6. Capture fidelity: the top of the capture must match the source (hero headline complete, nav not overlapping other blocks). If viewport-height classes caused it, pin them and rebuild the affected section.
 7. Report the result of each check as pass or fail with what was fixed. Run the screenshot pass again after fixes.
 
@@ -397,7 +396,6 @@ Logos, brand marks, mascots, customer logos, photography and copy are Source-spe
 ### Coverage matrix, usage rules, validation
 Every pattern gets one status: token, reusable component (with its level and code), section pattern, graphic asset, or source-specific. Totals per level and for nodes, text styles, colors, icons, SVG, images, controls, cards, nav patterns, sections, components, items per origin label. Usage rules for grid and rhythm, buttons and cards, type pairing, color ratios, graphic composition, do and don't. Validate against the capture section by section and list the source's contrast failures so new work fixes them.
 
-
 ## Phase B: design-tool handoff structure
 
 Use the tool the user picked at the handoff gate. Never modify the source capture. One artboard holds at most 8000px tall; split longer content. When the tool supports variables or tokens, create them and bind components to them. This is mandatory.
@@ -408,7 +406,7 @@ The design system lives on ONE page named `Design System`, so the rest of the fi
 - Then one Figma Section per level, stacked top to bottom with equal gaps (about 400px) and aligned left edges, named exactly: `00 Source capture`, `01 Tokens`, `02 Atoms`, `03 Molecules`, `04 Organisms`, `05 Sections & templates`, `06 Pages`, `07 Flows`, `08 Product & rules`, `09 Coverage`.
 - Inside each Section, frames sit in one row left to right with 160px gaps and equal top edges. The first frame is a note: breadcrumb `<BRAND> / DESIGN SYSTEM / 0X NAME`, title, one-line purpose, what is inside, how to use it for handoff, origin legend.
 - 06 Pages: `Home (1/2) · rebuilt`, `Home (1/2) · source`, and so on. Rebuilt frames hold only section instances in vertical auto layout.
-- 07 Flows: one row per journey (J-01, J-02...), each step a scaled section instance with a caption, orange or accent arrows between, plus prototype links with named flow starting points when feasible.
+- 07 Flows: one row per journey (J-01, J-02...), each step a scaled section instance with a caption, accent arrows between, plus prototype links with named flow starting points when feasible.
 - 08 Product & rules: experience and rhythm, take vs leave, graphic inventory, usage rules (do/don't using real instances), limitations, changelog.
 - 09 Coverage: its own Section with a `Coverage matrix` table (Item | Code | Level | Location | Status badge Covered/Partial/Missing) built from auto layout rows, and a `Totals` frame (variables, text styles, atoms, molecules, organisms, sections, templates). Every component and every captured section has a row.
 - New website work and variations go on another page (`New site`), never inside Design System.
@@ -419,7 +417,7 @@ The design system lives on ONE page named `Design System`, so the rest of the fi
 - Documentation sections map to the levels: overview, color, typography, spacing and grid, radius and effects on 01 Tokens; iconography and single controls with their state matrix on 02 Atoms; grouped controls on 03 Molecules; larger components on 04 Organisms by size; section patterns, decorative compositions, responsive and motion on 05; graphic inventory and usage rules on 08; coverage matrix and totals on 09.
 
 ### Tool-specific rules
-- Figma: load the Figma skills first (figma-use before any write; figma-generate-library when available). Create variable collections for color, space, radius and type first, then components. Every atom is a main component (or a component set when it has variants and states). Molecules are main components whose children are instances of atom components inside auto layout; organisms are made of molecule and atom instances; sections of organism instances. Use component properties: text properties for labels, boolean properties for optional parts, instance swap for icons and slots, and expose nested instances so a molecule can switch its atom variants. Name components with their code and path, for example `A-01 Button/Primary/Default`, `M-05 Issue card/Default`, `O-03 App frame`. Check the Assets panel and the Variables panel at the end.
+- Figma: load the Figma skills first (figma-use before any write; figma-generate-library when available). Create variable collections for color, space, radius and type first, then components. Every atom is a main component (or a component set when it has variants and states). Molecules are main components whose children are instances of atom components inside auto layout; organisms are made of molecule and atom instances; sections of organism instances. Use component properties: text properties for labels, boolean properties for optional parts, instance swap for icons and slots, and expose nested instances so a molecule can switch its atom variants. Name components with their code and path, for example `A-01 Button/Primary/Default`, `M-05 Issue card/Default`, `O-03 App frame`, and give each a description (what it is, which codes it is made of). Check the Assets panel and the Variables panel at the end.
 - Pencil (.pen): every reusable unit becomes a registered component (Create Component, origin marked magenta), and every token becomes a variable. Larger components are built from instances of smaller ones. A board that only shows drawings of components does not count. Verify in the Components tab that the list is not empty before delivering.
 - Claude Design, Wonder or any other canvas without component registration: build each component once as a named artboard or group with its code and Category/Component/Variant/State name, reuse it by duplicating that exact group (never redrawing), and list every one in the coverage matrix with its location and the codes it is made of.
 - In every tool, images and graphics from the capture must be placed on the boards as real assets. Never leave a gray box or a text description where a graphic belongs.
@@ -455,7 +453,7 @@ Do not expect the first version to be final. After delivering, invite specific f
 - If feedback is vague, offer 2 or 3 concrete options instead of guessing
 
 ## Step 7. Sync the design system
-When the user is happy with the page, or says to lock it in, update the design system levels to match every decision from the iterations (new radius, spacing, colors, component variants). Tag changed items Updated and add a short changelog entry on 08 Product & rules. From here the design system is the single source of truth.
+When the user is happy with the page, or says to lock it in, update the design system levels to match every decision from the iterations (new radius, spacing, colors, component variants). Tag changed items Updated and add a short changelog entry on 08 Product & rules. Regenerate the HTML guide and DESIGN.md too. From here the design system is the single source of truth.
 
 ## Step 8. Explore variations
 Before committing, or when asked, produce 2 to 3 variations side by side as separate artboards in a `Variations` Section on the New site page: color direction, type pairing, or layout. Each variation stays inside the design system rules unless the user asks to push beyond them. Let the user pick or mix, then run Step 7 again.
@@ -474,21 +472,19 @@ Do not claim the extraction is complete until every element in the source has be
 
 Completion checks before delivering the design system. Report each as pass or fail with the numbers:
 - Sections: audit table rows equal the number of sections in the capture
-- Hierarchy: all 8 levels exist as pages or boards, built in order, and each level's gate passed
+- Guide: the Live HTML guide has all 8 levels plus 09 Coverage, every captured section's components have A/M/O cards, a copy icon on every part (swatches, type rows, tables, components HTML + MD, screenshots, levels), a DESIGN.md export section, and DESIGN.md is saved next to it; totals per level are reported
+- Handoff gate: the user was asked whether to send the system to a design tool, and Phase B ran only on an explicit yes
+- Hierarchy (Phase B): all levels exist as Sections 00 to 09 on the Design System page, built in order, and each level's gate passed
 - Nesting: every molecule, organism and section is made of instances of smaller levels; zero redrawn or detached copies of existing components
 - Graphics: graphic tiles equal the graphics counted in the audit table
 - Components: registered components equal the reusable components in the coverage matrix, and the Components list in the tool is not empty
 - Variables: every token in the coverage matrix exists as a variable and components are bound to them
 - States: every control has its full variant by state matrix
 - Coverage: every element ID in the inventory has a status and level in the coverage matrix
-- Guide: the Live HTML guide has a copy icon on every part (swatches, type rows, tables, components HTML + MD, screenshots, levels), a DESIGN.md export section, and DESIGN.md is saved next to it
-- Handoff gate: the user was asked whether to send the system to a design tool, and Phase B ran only on an explicit yes
-- Guide levels: the Live HTML guide has all 8 levels with the same codes as the design tool, every captured section's components have A/M/O cards with Copy HTML, and the totals per level are reported
 - Visual QA: no failed asset tiles, no leftover placeholders, no overlapping or clipped text, no large empty panels, and a clean second screenshot pass
 - Frames: bounding boxes listed, no overlap, equal top edges
-- Required content: every documentation section 00 to 12 present on its level and not empty
+- Required content: every documentation part present on its level and not empty
 - Duplicates: each main component exists once
-
 
 ## Failure modes and recovery
 
@@ -511,7 +507,6 @@ Completion checks before delivering the design system. Report each as pass or fa
 | Design-tool bridge disconnects or layers vanish mid-build | Ask the user to re-run the plugin and not to edit or Undo; close other sessions using the same bridge; rebuild what is missing and re-verify counts |
 | Figma Free page limit | Keep the whole system on one `Design System` page with Sections 00 to 09 |
 
-
 ## Final response contract
 
 Close Phase A with a compact handoff:
@@ -523,7 +518,6 @@ Close Phase A with a compact handoff:
 6. The handoff gate question: send to Figma or another tool, or stop at HTML.
 
 When Phase B ran, add the design-tool link, the variable, style and component counts read back from the tool, the Section structure, and one clear next action (build a page, explore variations, sync feedback, expand responsively).
-
 
 ## Example requests
 
