@@ -100,17 +100,22 @@ npx skills add yosrend/design-system-extraction --list
 
 ## Required deliverables
 
-1. Source capture preserved beside the system.
-2. Foundations board: color, type, spacing, grid, radius, effects, and icons.
-3. Controls and components board with variants and states.
-4. Patterns, graphics, responsive behavior, motion, coverage, and usage rules.
-5. Origin labels, accessibility checks, source provenance, and limitations.
+Phase A, always:
+1. Live HTML guide organized by 8 levels (tokens, atoms, molecules, organisms, sections, page, flows, product and rules) plus a coverage audit, with live rebuilt components and a copy icon on every part (HTML, CSS, Markdown).
+2. DESIGN.md generated from the guide, copyable from the page and saved next to it.
+3. Reference screenshots per section, origin labels, accessibility findings and limitations.
+
+Then the agent asks whether to send the system to Figma or another design tool. If not, the skill ends at HTML.
+
+Phase B, only on request:
+4. One `Design System` page with Sections 00 Source capture to 09 Coverage: variables, text styles, registered components per level, rebuilt sections and pages, flows, rules.
+5. Optional new site, variations and responsive expansion built from the system.
 
 Values are labeled as **Extracted**, **Estimated**, **Inferred**, **Generated**, **Source-specific**, or **Updated**.
 
 ## Example
 
-> Extract a reusable design system from this authorized URL and build the boards in Figma. Use a 1440 × 900 viewport, preserve the source capture, and label all estimated values.
+> Extract a reusable design system from this authorized URL. Give me the HTML guide and DESIGN.md first, then ask whether to send it to Figma.
 
 The workflow is tool-agnostic and adapts to Claude Design, Figma, Pencil, Paper, or another editable design environment available to the host agent.
 
