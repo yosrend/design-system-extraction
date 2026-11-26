@@ -341,7 +341,7 @@ Build and publish the guide described in `references/html-guide.md`. Mandatory f
 - Sticky side index with one entry per level (00–09). Each level is one `<section>` with an anchor, breadcrumb, title, purpose line and origin legend.
 - Every component (A, M, O) is live HTML/CSS with neutral copy, never only an image. Every part has a **copy icon** that copies its HTML: component cards, color swatches (CSS variable line), type rows (CSS class), section rows (structure), tables (Markdown), and a copy icon on every level heading that copies that level as Markdown.
 - One **Copy CSS** button for the shared component stylesheet (tokens as CSS custom properties + component classes), kept in its own `<style id="ds">` block.
-- **Copy DESIGN.md** (and **Download DESIGN.md** where the host allows downloads; Artifact sandboxes ignore them, so also save DESIGN.md to the working folder) buttons that generate the full DESIGN.md from the page data in the structure of `references/design-md.md`, plus a visible "DESIGN.md structure" panel showing the outline so the user knows what they get.
+- **Copy DESIGN.md** and **Download DESIGN.md** buttons (in an Artifact, where downloads are blocked: Copy + Show full file, with DESIGN.md published beside the page) that generate the full DESIGN.md from the page data in the structure of `references/design-md.md`, plus a visible "DESIGN.md structure" panel showing the outline so the user knows what they get.
 - Source screenshots above each section group, captioned with the codes they use.
 - Clipboard: `navigator.clipboard.writeText` inside the click handler with a textarea fallback and a short "Copied" toast.
 

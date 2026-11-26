@@ -30,6 +30,39 @@ Reference → Capture → Decompose parts → Media rules → Extract 8 levels
 
 Reference files: [HTML guide spec](references/html-guide.md) · [DESIGN.md structure](references/design-md.md) · [Figma handoff recipe](references/figma-handoff.md)
 
+## Sample output
+
+Test run on a public landing page (fourmula.ai, 1440 × 900). Full Markdown export: [examples/fourmula/DESIGN.md](examples/fourmula/DESIGN.md).
+
+| Structure: 00 Overview + level index 00–09 | Tokens: colors and step gradients |
+| --- | --- |
+| ![Level index and overview](assets/samples/05-structure-00-overview.png) | ![Color and gradient tokens](assets/samples/01-tokens-colors.png) |
+| **Typography scale with copy-CSS per row** | **Atoms with copy-HTML per card** |
+| ![Typography](assets/samples/02-typography.png) | ![Atoms](assets/samples/03-atoms.png) |
+| **Organism rebuild (step slide)** | **09 Coverage: totals + matrix** |
+| ![Organism](assets/samples/04-organism-step-slide.png) | ![Coverage](assets/samples/06-coverage.png) |
+| **DESIGN.md structure (outline)** | **DESIGN.md text (generated file)** |
+| ![DESIGN.md structure](assets/samples/07-design-md-structure.png) | ![DESIGN.md text](assets/samples/08-design-md-text.png) |
+
+### DESIGN.md file structure
+
+```text
+# [Brand] Design System          source, date, viewport, origin labels, shared codes
+## 00 Overview                   character table (grounds, type, color, grid, shape)
+## 01 Tokens                     Color · Gradients · Typography · Spacing/radius/layout · Effects & motion
+## 02 Atoms                      ### A-xx Name — made of + html snippet
+## 03 Molecules                  ### M-xx Name — made of atom codes + html snippet
+## 04 Organisms                  Anatomy table + ### O-xx live rebuilds
+## 05 Sections & templates       section list (ground, height, codes) + T-xx templates
+## 06 Pages                      page rhythm
+## 07 Flows                      J-xx journeys
+## 08 Product & rules            usage rules · take vs leave · limitations · changelog
+## 09 Coverage                   totals + matrix (item · code · level · location · status)
+## Appendix — component CSS      tokens as CSS variables + component classes
+```
+
+Brand logos, photography and copy of the tested site appear only as reference; the copyable components use neutral placeholders.
+
 ## Install
 
 ### Automatic agent detection
