@@ -2,6 +2,10 @@
 
 All notable user-facing changes are documented here.
 
+## 2.0.2 — 2026-11-26
+
+- Download DESIGN.md works inside an Artifact when the page declares the `downloads` capability and saves via `claude.use('downloads')`; Copy + Show full file is now the fallback, not the default. Tested on fourmula.ai.
+
 ## 2.0.1 — 2026-11-26
 
 - Artifact hosts block downloads: DESIGN.md is delivered by Copy, a Show-full-file panel and a companion DESIGN.md file. Tested on fourmula.ai.
